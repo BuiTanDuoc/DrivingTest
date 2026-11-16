@@ -1,0 +1,110 @@
+[
+  {
+    "number": 1,
+    "topic": "rules",
+    "critical": true,
+    "vi": {
+      "text": "Khi gặp đèn tín hiệu giao thông màu đỏ, người điều khiển phương tiện phải làm gì?",
+      "explanation": "Đèn đỏ là tín hiệu cấm đi. Người điều khiển phương tiện phải dừng lại trước vạch dừng."
+    },
+    "en": {
+      "text": "What must a driver do when facing a red traffic light?",
+      "explanation": "A red light means stop. The driver must stop before the stop line."
+    },
+    "answers": [
+      { "correct": true,  "vi": "Dừng lại trước vạch dừng.", "en": "Stop before the stop line." },
+      { "correct": false, "vi": "Giảm tốc độ và đi tiếp nếu không có xe khác.", "en": "Slow down and continue if no other vehicle is coming." },
+      { "correct": false, "vi": "Tăng tốc để qua nhanh ngã tư.", "en": "Speed up to clear the intersection quickly." }
+    ]
+  },
+  {
+    "number": 2,
+    "topic": "signs",
+    "critical": false,
+    "vi": {
+      "text": "Biển báo hình tròn, nền xanh, có mũi tên trắng chỉ hướng đi thuộc nhóm biển nào?",
+      "explanation": "Biển hình tròn nền xanh với hình vẽ màu trắng là biển hiệu lệnh, người tham gia giao thông bắt buộc phải tuân theo."
+    },
+    "en": {
+      "text": "A round blue sign with a white arrow belongs to which group of signs?",
+      "explanation": "Round blue signs with white symbols are mandatory signs that road users must obey."
+    },
+    "answers": [
+      { "correct": false, "vi": "Biển cấm.", "en": "Prohibitory signs." },
+      { "correct": true,  "vi": "Biển hiệu lệnh.", "en": "Mandatory signs." },
+      { "correct": false, "vi": "Biển cảnh báo nguy hiểm.", "en": "Warning signs." }
+    ]
+  },
+  {
+    "number": 3,
+    "topic": "scenarios",
+    "critical": false,
+    "vi": {
+      "text": "Tại nơi đường giao nhau không có đèn tín hiệu và không có biển báo, xe đi theo hướng nào được nhường?",
+      "explanation": "Quy tắc chung: phải nhường đường cho xe đi đến từ bên phải mình. Hãy đối chiếu với quy định hiện hành khi thay bằng nội dung chính thức."
+    },
+    "en": {
+      "text": "At an intersection without signals or signs, which vehicles must you give way to?",
+      "explanation": "General rule: give way to vehicles approaching from your right. Verify against current regulations when replacing this sample."
+    },
+    "answers": [
+      { "correct": true,  "vi": "Xe đi đến từ bên phải.", "en": "Vehicles approaching from the right." },
+      { "correct": false, "vi": "Xe đi đến từ bên trái.", "en": "Vehicles approaching from the left." },
+      { "correct": false, "vi": "Không phải nhường xe nào.", "en": "No vehicle needs to be given way to." }
+    ]
+  },
+  {
+    "number": 4,
+    "topic": "driving-skills",
+    "critical": false,
+    "vi": {
+      "text": "Khi xuống dốc dài, để bảo đảm an toàn người lái xe nên làm gì?",
+      "explanation": "Dùng số thấp để tận dụng phanh động cơ, kết hợp phanh chân khi cần; không về số 0 cho xe trôi tự do."
+    },
+    "en": {
+      "text": "When driving down a long slope, what should the driver do to stay safe?",
+      "explanation": "Use a low gear to take advantage of engine braking, combined with the foot brake when needed; never coast in neutral."
+    },
+    "answers": [
+      { "correct": true,  "vi": "Sử dụng số thấp, kết hợp phanh động cơ và phanh chân.", "en": "Use a low gear, combining engine braking and the foot brake." },
+      { "correct": false, "vi": "Về số 0 cho xe tự trôi xuống dốc.", "en": "Shift to neutral and let the vehicle roll down." },
+      { "correct": false, "vi": "Chỉ đạp phanh chân liên tục.", "en": "Keep the foot brake pressed continuously." }
+    ]
+  },
+  {
+    "number": 5,
+    "topic": "vehicle",
+    "critical": false,
+    "vi": {
+      "text": "Đèn báo áp suất dầu bôi trơn sáng lên khi xe đang chạy cho biết điều gì?",
+      "explanation": "Áp suất dầu bôi trơn thấp có thể làm hỏng động cơ; cần dừng xe ở nơi an toàn và kiểm tra."
+    },
+    "en": {
+      "text": "What does the oil pressure warning light coming on while driving indicate?",
+      "explanation": "Low oil pressure can damage the engine; stop in a safe place and check."
+    },
+    "answers": [
+      { "correct": false, "vi": "Xe sắp hết nhiên liệu.", "en": "The vehicle is running low on fuel." },
+      { "correct": true,  "vi": "Áp suất dầu bôi trơn thấp, cần dừng xe kiểm tra.", "en": "Oil pressure is low; stop and inspect." },
+      { "correct": false, "vi": "Phanh tay đang được kéo.", "en": "The parking brake is engaged." }
+    ]
+  },
+  {
+    "number": 6,
+    "topic": "ethics",
+    "critical": true,
+    "vi": {
+      "text": "Người lái xe gây tai nạn giao thông làm người khác bị thương phải làm gì trước tiên?",
+      "explanation": "Phải dừng xe, giữ nguyên hiện trường, cấp cứu người bị nạn và báo ngay cho cơ quan chức năng."
+    },
+    "en": {
+      "text": "What must a driver who causes a traffic accident with injuries do first?",
+      "explanation": "Stop, preserve the scene, give first aid to the injured and notify the authorities immediately."
+    },
+    "answers": [
+      { "correct": true,  "vi": "Dừng xe, giữ nguyên hiện trường, cấp cứu người bị nạn và báo cơ quan chức năng.", "en": "Stop, preserve the scene, help the injured and notify the authorities." },
+      { "correct": false, "vi": "Rời khỏi hiện trường để tránh bị xử lý.", "en": "Leave the scene to avoid penalties." },
+      { "correct": false, "vi": "Chờ người nhà tới giải quyết rồi mới báo.", "en": "Wait for relatives to arrive before reporting." }
+    ]
+  }
+]
