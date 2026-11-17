@@ -55,3 +55,5 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+DrivingTest/src/DrivingTest.Api/appsettings.Development.json
+DrivingTest/src/DrivingTest.Api/appsettings.json
