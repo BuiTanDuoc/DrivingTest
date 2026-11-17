@@ -44,7 +44,7 @@ function LanguageSwitcher() {
 
 export default function Layout() {
   const { t } = useTranslation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const close = () => setOpen(false);
@@ -56,7 +56,8 @@ export default function Layout() {
     ['/', t('nav.home'), true],
     ['/hoc', t('nav.learn')],
     ['/thi', t('nav.exam')],
-    ['/lich-su', t('nav.history')]
+    ['/lich-su', t('nav.history')],
+    ...(isAdmin ? [['/quan-tri', t('nav.admin')]] : [])
   ];
 
   return (
@@ -78,8 +79,10 @@ export default function Layout() {
               <ThemeToggle />
               {isAuthenticated ? (
                 <div className="user-chip">
-                  <span className="avatar" aria-hidden="true">{(user?.displayName || '?').charAt(0).toUpperCase()}</span>
-                  <span className="user-name">{user?.displayName}</span>
+                  <Link to="/tai-khoan" className="user-link" onClick={close} title={t('nav.profile')}>
+                    <span className="avatar" aria-hidden="true">{(user?.displayName || '?').charAt(0).toUpperCase()}</span>
+                    <span className="user-name">{user?.displayName}</span>
+                  </Link>
                   <button className="btn btn-ghost btn-sm" onClick={() => { close(); logout(); }}>{t('nav.logout')}</button>
                 </div>
               ) : (

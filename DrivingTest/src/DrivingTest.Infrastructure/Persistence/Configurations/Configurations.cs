@@ -83,6 +83,7 @@ public sealed class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
         b.HasIndex(x => x.NormalizedEmail).IsUnique();
         b.Property(x => x.DisplayName).HasMaxLength(100).IsRequired();
         b.Property(x => x.PasswordHash).HasMaxLength(500).IsRequired();
+        b.Property(x => x.Role).HasMaxLength(20).IsRequired();
     }
 }
 

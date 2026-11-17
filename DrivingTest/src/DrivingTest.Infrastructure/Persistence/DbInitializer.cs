@@ -10,7 +10,7 @@ namespace DrivingTest.Infrastructure.Persistence;
 
 /// <summary>Tạo/migrate database, seed chủ đề và import ngân hàng câu hỏi từ file JSON (idempotent theo Number).</summary>
 public sealed class DbInitializer(
-    AppDbContext db, HybridCache cache, IConfiguration config, ILogger<DbInitializer> logger)
+    AppDbContext db, HybridCache cache, IConfiguration config, IPasswordService passwords, ILogger<DbInitializer> logger)
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
@@ -39,6 +39,8 @@ public sealed class DbInitializer(
         if (db.Database.GetMigrations().Any()) await db.Database.MigrateAsync(ct);
         else await db.Database.EnsureCreatedAsync(ct);
 
+        await SeedAdminAsync(ct);
+
         var changed = await SeedTopicsAsync(ct);
         changed |= await SeedQuestionsAsync(ct);
 
@@ -46,6 +48,43 @@ public sealed class DbInitializer(
         {
             await cache.RemoveByTagAsync(CacheTags.Bank, ct);
             await cache.RemoveByTagAsync(CacheTags.Stats, ct);
+        }
+    }
+
+    /// <summary>
+    /// Tạo tài khoản admin đầu tiên từ cấu hình Admin:Email / Admin:Password (nên đặt bằng biến môi trường ở production).
+    /// Nếu email đã tồn tại thì chỉ đảm bảo tài khoản đó có quyền Admin; không đổi mật khẩu.
+    /// </summary>
+    private async Task SeedAdminAsync(CancellationToken ct)
+    {
+        var email = config["Admin:Email"]?.Trim();
+        var password = config["Admin:Password"];
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password)) return;
+
+        var normalized = email.ToUpperInvariant();
+        var user = await db.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalized, ct);
+
+        if (user is null)
+        {
+            user = new AppUser
+            {
+                Id = Guid.CreateVersion7(),
+                Email = email,
+                NormalizedEmail = normalized,
+                DisplayName = config["Admin:DisplayName"] ?? "Administrator",
+                Role = Roles.Admin,
+                CreatedAt = DateTime.UtcNow
+            };
+            user.PasswordHash = passwords.Hash(user, password);
+            db.Users.Add(user);
+            await db.SaveChangesAsync(ct);
+            logger.LogInformation("Created admin account {Email}.", email);
+        }
+        else if (user.Role != Roles.Admin)
+        {
+            user.Role = Roles.Admin;
+            await db.SaveChangesAsync(ct);
+            logger.LogInformation("Promoted {Email} to Admin.", email);
         }
     }
 

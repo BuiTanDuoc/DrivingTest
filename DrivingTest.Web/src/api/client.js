@@ -26,6 +26,7 @@ export const tokenStore = {
     localStorage.setItem(K.refresh, auth.refreshToken);
     localStorage.setItem(K.user, JSON.stringify(auth.user));
   },
+  setUser(user) { localStorage.setItem(K.user, JSON.stringify(user)); },
   clear() { Object.values(K).forEach((k) => localStorage.removeItem(k)); }
 };
 

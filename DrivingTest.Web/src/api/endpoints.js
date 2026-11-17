@@ -30,6 +30,22 @@ export const examApi = {
   history: (query) => api('/api/exams/history', { query })
 };
 
+export const profileApi = {
+  get: () => api('/api/profile'),
+  update: (displayName) => api('/api/profile', { method: 'PUT', body: { displayName } }),
+  // Trả về cặp token mới (các thiết bị khác bị đăng xuất)
+  changePassword: (currentPassword, newPassword) =>
+    api('/api/profile/change-password', { method: 'POST', body: { currentPassword, newPassword } })
+};
+
+export const adminApi = {
+  list: (query) => api('/api/admin/questions', { query }),
+  get: (id) => api(`/api/admin/questions/${id}`),
+  create: (body) => api('/api/admin/questions', { method: 'POST', body }),
+  update: (id, body) => api(`/api/admin/questions/${id}`, { method: 'PUT', body }),
+  remove: (id) => api(`/api/admin/questions/${id}`, { method: 'DELETE' })
+};
+
 export const statsApi = {
   me: () => api('/api/stats/me')
 };

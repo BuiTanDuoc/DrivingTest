@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace DrivingTest.Application.Features.Auth;
 
-public sealed record UserDto(Guid Id, string Email, string DisplayName);
+public sealed record UserDto(Guid Id, string Email, string DisplayName, string Role);
 
 public sealed record AuthResponse(string AccessToken, DateTime AccessTokenExpiresAt, string RefreshToken, UserDto User);
 
@@ -31,7 +31,7 @@ public sealed class AuthTokenIssuer(
         });
         await db.SaveChangesAsync(ct);
 
-        return new AuthResponse(access, accessExpires, refresh, new UserDto(user.Id, user.Email, user.DisplayName));
+        return new AuthResponse(access, accessExpires, refresh, new UserDto(user.Id, user.Email, user.DisplayName, user.Role));
     }
 }
 

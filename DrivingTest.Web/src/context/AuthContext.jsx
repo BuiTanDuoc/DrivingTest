@@ -27,6 +27,19 @@ export function AuthProvider({ children }) {
     [finish]
   );
 
+  /** Áp dụng cặp token mới (ví dụ sau khi đổi mật khẩu). */
+  const applyAuth = useCallback((auth) => finish(auth), [finish]);
+
+  /** Cập nhật thông tin hiển thị của user hiện tại (ví dụ sau khi đổi tên). */
+  const updateUser = useCallback((patch) => {
+    setUser((current) => {
+      if (!current) return current;
+      const next = { ...current, ...patch };
+      tokenStore.setUser(next);
+      return next;
+    });
+  }, []);
+
   const logout = useCallback(async () => {
     const refresh = tokenStore.refresh;
     tokenStore.clear();
@@ -35,8 +48,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, isAuthenticated: !!user, login, register, logout }),
-    [user, login, register, logout]
+    () => ({ user, isAuthenticated: !!user, isAdmin: user?.role === 'Admin', login, register, logout, applyAuth, updateUser }),
+    [user, login, register, logout, applyAuth, updateUser]
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

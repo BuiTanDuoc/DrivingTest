@@ -2,7 +2,7 @@ export default {
   app: { name: 'Thi Bằng Lái B', tagline: 'Học lý thuyết và thi thử bằng lái xe hạng B' },
   nav: {
     home: 'Trang chủ', learn: 'Học lý thuyết', exam: 'Thi thử', history: 'Lịch sử',
-    login: 'Đăng nhập', register: 'Đăng ký', logout: 'Đăng xuất', menu: 'Mở menu'
+    login: 'Đăng nhập', register: 'Đăng ký', logout: 'Đăng xuất', menu: 'Mở menu', admin: 'Quản trị', profile: 'Tài khoản'
   },
   common: {
     loading: 'Đang tải...', retry: 'Thử lại', network: 'Không kết nối được máy chủ. Vui lòng thử lại.',
@@ -88,6 +88,39 @@ export default {
     passwordHint: 'Tối thiểu 8 ký tự, gồm chữ và số.',
     errEmail: 'Email không hợp lệ.', errPassword: 'Mật khẩu cần tối thiểu 8 ký tự, gồm chữ và số.',
     errName: 'Vui lòng nhập tên hiển thị.', errRequired: 'Vui lòng nhập đầy đủ thông tin.'
+  },
+
+  profile: {
+    title: 'Tài khoản của tôi', subtitle: 'Quản lý thông tin cá nhân và mật khẩu.',
+    info: 'Thông tin cá nhân', email: 'Email', role: 'Vai trò', roleAdmin: 'Quản trị viên', roleUser: 'Người dùng',
+    joined: 'Ngày tham gia', displayName: 'Tên hiển thị', save: 'Lưu thay đổi', saving: 'Đang lưu...', saved: 'Đã cập nhật hồ sơ.',
+    passwordTitle: 'Đổi mật khẩu', current: 'Mật khẩu hiện tại', newPassword: 'Mật khẩu mới', confirm: 'Nhập lại mật khẩu mới',
+    change: 'Đổi mật khẩu', changed: 'Đã đổi mật khẩu. Các thiết bị khác sẽ phải đăng nhập lại.',
+    mismatch: 'Mật khẩu nhập lại không khớp.', sameAsOld: 'Mật khẩu mới phải khác mật khẩu hiện tại.'
+  },
+
+  admin: {
+    title: 'Quản lý câu hỏi', subtitle: 'Thêm, sửa, xóa ngân hàng câu hỏi.', add: 'Thêm câu hỏi',
+    search: 'Tìm theo nội dung hoặc số câu...', allTopics: 'Tất cả chủ đề',
+    statusAll: 'Mọi trạng thái', statusActive: 'Đang hiển thị', statusInactive: 'Đã ẩn', criticalOnly: 'Chỉ câu điểm liệt',
+    colNumber: 'Số', colTopic: 'Chủ đề', colQuestion: 'Câu hỏi', colStatus: 'Trạng thái', colActions: 'Thao tác',
+    active: 'Hiển thị', inactive: 'Đã ẩn', edit: 'Sửa', delete: 'Xóa', total: '{{count}} câu hỏi', empty: 'Không có câu hỏi nào.',
+    forbidden: 'Bạn không có quyền truy cập trang này.',
+    deleteTitle: 'Xóa câu hỏi?', deleteBody: 'Câu {{n}} sẽ bị xóa. Nếu câu đã xuất hiện trong lịch sử thi, câu sẽ được ẩn thay vì xóa hẳn.',
+    deleted: 'Đã xóa câu hỏi.', deactivated: 'Câu hỏi đã có trong lịch sử thi nên được chuyển sang trạng thái ẩn.',
+    created: 'Đã thêm câu hỏi.', updated: 'Đã lưu câu hỏi.'
+  },
+
+  editor: {
+    newTitle: 'Thêm câu hỏi', editTitle: 'Sửa câu {{n}}', back: 'Quay lại danh sách',
+    number: 'Số câu', topic: 'Chủ đề', chooseTopic: '— Chọn chủ đề —', critical: 'Câu điểm liệt', active: 'Hiển thị cho người dùng',
+    image: 'Đường dẫn ảnh (URL)', imageHint: 'Để trống nếu câu hỏi không có hình.',
+    langVi: 'Tiếng Việt', langEn: 'English', englishHint: 'Bản tiếng Anh là tùy chọn. Bỏ trống thì người dùng sẽ thấy bản tiếng Việt.',
+    text: 'Nội dung câu hỏi', explanation: 'Giải thích', answers: 'Đáp án', answerPlaceholder: 'Nội dung đáp án {{n}}',
+    correct: 'Đúng', addAnswer: 'Thêm đáp án', removeAnswer: 'Xóa đáp án', moveUp: 'Chuyển lên', moveDown: 'Chuyển xuống',
+    save: 'Lưu câu hỏi', saving: 'Đang lưu...', delete: 'Xóa câu hỏi',
+    errNumber: 'Số câu phải là số nguyên dương.', errTopic: 'Hãy chọn chủ đề.', errText: 'Hãy nhập nội dung câu hỏi (tiếng Việt).',
+    errAnswers: 'Cần ít nhất 2 đáp án, mỗi đáp án có nội dung tiếng Việt.', errCorrect: 'Hãy chọn đúng một đáp án đúng.'
   },
 
   notFound: { title: 'Không tìm thấy trang', body: 'Trang bạn tìm không tồn tại.', back: 'Về trang chủ' }

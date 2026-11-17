@@ -6,6 +6,7 @@ using DrivingTest.Api.Extensions;
 using DrivingTest.Api.Infrastructure;
 using DrivingTest.Application;
 using DrivingTest.Application.Common;
+using DrivingTest.Domain;
 using DrivingTest.Infrastructure;
 using DrivingTest.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,10 +42,12 @@ builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationSc
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromSeconds(30),
-            NameClaimType = "name"
+            NameClaimType = "name",
+            RoleClaimType = "role" // claim "role" do TokenService phát hành
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(o =>
+    o.AddPolicy("Admin", p => p.RequireRole(Roles.Admin)));
 
 // ---- CORS ----
 var origins = config.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
@@ -107,5 +110,6 @@ app.MapHealthChecks("/health");
 app.MapAuthEndpoints();
 app.MapCatalogEndpoints();
 app.MapExamEndpoints();
+app.MapAccountEndpoints();
 
 app.Run();

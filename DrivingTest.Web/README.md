@@ -17,6 +17,8 @@ Kết nối với backend `DrivingTest.Backend` (.NET 10).
 | Kết quả | `/ket-qua/:id` | Điểm, đạt/trượt (kèm lý do), thời gian, xem lại từng câu kèm giải thích, lọc câu sai |
 | Lịch sử & thống kê | `/lich-su` | Tổng lượt thi, tỷ lệ đạt, điểm trung bình, tiến độ học, kết quả theo chủ đề, lịch sử thi |
 | Tài khoản | `/dang-nhap`, `/dang-ky` | Đăng ký / đăng nhập (JWT + refresh token tự động) |
+| Hồ sơ | `/tai-khoan` | Xem và đổi tên hiển thị, đổi mật khẩu (các thiết bị khác bị đăng xuất) |
+| Quản trị (Admin) | `/quan-tri`, `/quan-tri/cau-hoi/moi`, `/quan-tri/cau-hoi/:id` | Danh sách, tìm kiếm, lọc; thêm / sửa / xóa câu hỏi song ngữ; chỉ tài khoản Admin |
 
 > **Lưu ý:** backend yêu cầu đăng nhập cho thi thử, kết quả và lịch sử. Học lý thuyết dùng được khi chưa đăng nhập.
 
@@ -50,6 +52,8 @@ src/
 
 ### 🧩 Ghi chú thiết kế
 
+- **Phân quyền**: menu và route `/quan-tri` chỉ hiện với `role = Admin` (lấy từ backend); backend vẫn kiểm tra quyền ở mọi endpoint `/api/admin`.
+- **Xóa câu hỏi** đã có trong lịch sử thi chỉ ẩn câu đó, không xóa hẳn (backend quyết định và web báo rõ cho admin).
 - **Đồng hồ thi** tính theo mốc `expiresAt` của server và độ lệch giờ server-client, nên không trôi khi tab bị ngủ hoặc máy sai giờ.
 - **Autosave** đáp án qua hàng đợi tuần tự; lỗi thì hoàn tác và báo người dùng. Nộp bài chờ hàng đợi xong.
 - **F5 giữa chừng**: vào lại `/thi` sẽ có nút "Tiếp tục bài đang làm".
@@ -70,6 +74,8 @@ A web app for studying theory and taking mock exams for the Vietnamese **class B
 | Result | `/ket-qua/:id` | Score, pass/fail with the reason, time taken, per-question review, wrong-only filter |
 | History & stats | `/lich-su` | Attempts, pass rate, average score, learning progress, per-topic results, exam history |
 | Auth | `/dang-nhap`, `/dang-ky` | Sign up / sign in (JWT with automatic refresh) |
+| Profile | `/tai-khoan` | Edit display name, change password (other devices are signed out) |
+| Admin | `/quan-tri`, `/quan-tri/cau-hoi/moi`, `/quan-tri/cau-hoi/:id` | List, search and filter; add / edit / delete bilingual questions; Admin accounts only |
 
 > **Note:** the backend requires sign-in for mock exams, results and history. Studying works without an account.
 

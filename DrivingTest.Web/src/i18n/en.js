@@ -2,7 +2,7 @@ export default {
   app: { name: 'B-Class Driving Test', tagline: 'Study theory and take mock exams for the class B driving license' },
   nav: {
     home: 'Home', learn: 'Study', exam: 'Mock exam', history: 'History',
-    login: 'Sign in', register: 'Sign up', logout: 'Sign out', menu: 'Open menu'
+    login: 'Sign in', register: 'Sign up', logout: 'Sign out', menu: 'Open menu', admin: 'Admin', profile: 'Account'
   },
   common: {
     loading: 'Loading...', retry: 'Try again', network: 'Cannot reach the server. Please try again.',
@@ -88,6 +88,39 @@ export default {
     passwordHint: 'At least 8 characters, with letters and digits.',
     errEmail: 'Invalid email address.', errPassword: 'Password needs at least 8 characters, with letters and digits.',
     errName: 'Please enter a display name.', errRequired: 'Please fill in all fields.'
+  },
+
+  profile: {
+    title: 'My account', subtitle: 'Manage your personal information and password.',
+    info: 'Personal information', email: 'Email', role: 'Role', roleAdmin: 'Administrator', roleUser: 'User',
+    joined: 'Member since', displayName: 'Display name', save: 'Save changes', saving: 'Saving...', saved: 'Profile updated.',
+    passwordTitle: 'Change password', current: 'Current password', newPassword: 'New password', confirm: 'Confirm new password',
+    change: 'Change password', changed: 'Password changed. Your other devices will need to sign in again.',
+    mismatch: 'The passwords do not match.', sameAsOld: 'The new password must differ from the current one.'
+  },
+
+  admin: {
+    title: 'Question management', subtitle: 'Add, edit and delete questions in the bank.', add: 'Add question',
+    search: 'Search by text or number...', allTopics: 'All topics',
+    statusAll: 'Any status', statusActive: 'Visible', statusInactive: 'Hidden', criticalOnly: 'Critical only',
+    colNumber: 'No.', colTopic: 'Topic', colQuestion: 'Question', colStatus: 'Status', colActions: 'Actions',
+    active: 'Visible', inactive: 'Hidden', edit: 'Edit', delete: 'Delete', total: '{{count}} questions', empty: 'No questions found.',
+    forbidden: 'You do not have permission to view this page.',
+    deleteTitle: 'Delete this question?', deleteBody: 'Question {{n}} will be deleted. If it appears in exam history it will be hidden instead of removed.',
+    deleted: 'Question deleted.', deactivated: 'The question appears in exam history, so it was hidden instead of deleted.',
+    created: 'Question added.', updated: 'Question saved.'
+  },
+
+  editor: {
+    newTitle: 'Add question', editTitle: 'Edit question {{n}}', back: 'Back to the list',
+    number: 'Number', topic: 'Topic', chooseTopic: '— Choose a topic —', critical: 'Critical question', active: 'Visible to users',
+    image: 'Image URL', imageHint: 'Leave empty if the question has no image.',
+    langVi: 'Tiếng Việt', langEn: 'English', englishHint: 'The English version is optional. If empty, users will see the Vietnamese text.',
+    text: 'Question text', explanation: 'Explanation', answers: 'Answers', answerPlaceholder: 'Answer {{n}} text',
+    correct: 'Correct', addAnswer: 'Add answer', removeAnswer: 'Remove answer', moveUp: 'Move up', moveDown: 'Move down',
+    save: 'Save question', saving: 'Saving...', delete: 'Delete question',
+    errNumber: 'The number must be a positive integer.', errTopic: 'Please choose a topic.', errText: 'Please enter the question text (Vietnamese).',
+    errAnswers: 'At least 2 answers are required, each with Vietnamese text.', errCorrect: 'Mark exactly one answer as correct.'
   },
 
   notFound: { title: 'Page not found', body: "The page you're looking for doesn't exist.", back: 'Back to home' }

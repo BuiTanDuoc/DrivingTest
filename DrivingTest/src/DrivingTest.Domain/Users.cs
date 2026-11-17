@@ -1,5 +1,11 @@
 namespace DrivingTest.Domain;
 
+public static class Roles
+{
+    public const string User = "User";
+    public const string Admin = "Admin";
+}
+
 public class AppUser
 {
     public Guid Id { get; set; }
@@ -7,6 +13,8 @@ public class AppUser
     public string NormalizedEmail { get; set; } = "";
     public string DisplayName { get; set; } = "";
     public string PasswordHash { get; set; } = "";
+    /// <summary>"User" hoặc "Admin" (xem <see cref="Roles"/>).</summary>
+    public string Role { get; set; } = Roles.User;
     public DateTime CreatedAt { get; set; }
 }
 

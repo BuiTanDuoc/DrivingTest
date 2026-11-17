@@ -8,6 +8,10 @@ import Result from './pages/Result';
 import History from './pages/History';
 import AuthForm from './pages/AuthForm';
 import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
+import AdminQuestions from './pages/admin/AdminQuestions';
+import QuestionEditor from './pages/admin/QuestionEditor';
+import AdminRoute from './components/AdminRoute';
 
 export default function App() {
   return (
@@ -24,6 +28,14 @@ export default function App() {
             <Route path="thi" element={<Exam />} />
             <Route path="ket-qua/:id" element={<Result />} />
             <Route path="lich-su" element={<History />} />
+            <Route path="tai-khoan" element={<Profile />} />
+          </Route>
+
+          {/* Quản trị: chỉ tài khoản Admin. */}
+          <Route element={<AdminRoute />}>
+            <Route path="quan-tri" element={<AdminQuestions />} />
+            <Route path="quan-tri/cau-hoi/moi" element={<QuestionEditor />} />
+            <Route path="quan-tri/cau-hoi/:id" element={<QuestionEditor />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

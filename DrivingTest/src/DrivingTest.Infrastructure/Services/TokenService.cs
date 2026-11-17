@@ -30,6 +30,7 @@ public sealed class TokenService(IOptions<JwtOptions> options, TimeProvider cloc
                 new Claim("sub", user.Id.ToString()),
                 new Claim("email", user.Email),
                 new Claim("name", user.DisplayName),
+                new Claim("role", user.Role),
                 new Claim("jti", Guid.NewGuid().ToString())
             ])
         };

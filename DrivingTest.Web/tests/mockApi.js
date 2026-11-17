@@ -61,6 +61,34 @@ export function installFetch() {
     if (path.endsWith('/result')) return json(result);
     if (path === '/api/auth/login')
       return json({ accessToken: 'a', accessTokenExpiresAt: new Date(now + 900_000).toISOString(), refreshToken: 'r', user: { id: 'u1', email: 'a@b.c', displayName: 'Mười' } });
+    const body = init.body ? JSON.parse(init.body) : undefined;
+    const authResponse = (token) => ({ accessToken: token, accessTokenExpiresAt: new Date(now + 900_000).toISOString(), refreshToken: 'r2', user: { id: 'u1', email: 'a@b.c', displayName: 'Mười', role: 'User' } });
+
+    if (path === '/api/profile' && method === 'GET')
+      return json({ id: 'u1', email: 'a@b.c', displayName: 'Mười', role: 'User', createdAt: new Date(now).toISOString() });
+    if (path === '/api/profile' && method === 'PUT')
+      return json({ id: 'u1', email: 'a@b.c', displayName: body.displayName, role: 'User', createdAt: new Date(now).toISOString() });
+    if (path === '/api/profile/change-password') {
+      if (body.currentPassword === 'wrong')
+        return json({ title: 'Validation failed', errors: { CurrentPassword: ['Current password is incorrect.'] } }, 400);
+      return json(authResponse('new-access'));
+    }
+
+    if (path === '/api/admin/questions' && method === 'GET')
+      return json({
+        items: [{ id: 11, number: 1, topicId: 1, topicCode: 'rules', isCritical: true, isActive: true, hasImage: false, answerCount: 2, text: 'Đèn đỏ phải làm gì?' }],
+        page: 1, pageSize: 20, totalCount: 1, totalPages: 1
+      });
+    if (path === '/api/admin/questions' && method === 'POST') return json({ id: 99, ...body }, 201);
+    if (path === '/api/admin/questions/11' && method === 'DELETE') return json({ deleted: true, deactivated: false });
+    if (path === '/api/admin/questions/11' && method === 'GET')
+      return json({
+        id: 11, number: 1, topicId: 1, topicCode: 'rules', isCritical: true, isActive: true, imageUrl: null,
+        texts: { vi: { text: 'Đèn đỏ phải làm gì?', explanation: 'Cấm đi.' } },
+        answers: [{ id: 111, isCorrect: true, texts: { vi: 'Dừng lại' } }, { id: 112, isCorrect: false, texts: { vi: 'Đi tiếp' } }]
+      });
+    if (path === '/api/admin/questions/11' && method === 'PUT') return json({ id: 11, ...body });
+
     return json({ title: 'Not found' }, 404);
   });
   return calls;

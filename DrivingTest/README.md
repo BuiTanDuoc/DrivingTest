@@ -16,6 +16,24 @@ dotnet run --project src/DrivingTest.Api   # http://localhost:5080
 - OpenAPI: `http://localhost:5080/openapi/v1.json`
 - Health: `http://localhost:5080/health`
 
+## Tài khoản Admin
+
+Admin đầu tiên được tạo khi khởi động (nếu `Database:AutoInitialize` bật) từ cấu hình:
+
+```json
+"Admin": { "Email": "admin@example.com", "Password": "…", "DisplayName": "Administrator" }
+```
+
+Dev đã có sẵn `admin@drivingtest.local` / `Admin@12345` trong `appsettings.Development.json` (**chỉ dùng cho dev**).
+Production đặt bằng biến môi trường `Admin__Email`, `Admin__Password`. Nếu email đã tồn tại, hệ thống chỉ nâng quyền Admin, không đổi mật khẩu.
+Token chứa claim `role`, nên người vừa được nâng quyền cần đăng nhập lại.
+
+Xóa câu hỏi: câu chưa xuất hiện trong bài thi nào sẽ bị xóa hẳn; câu đã có trong lịch sử thi chỉ bị **ẩn** (`IsActive = false`)
+để không làm hỏng kết quả cũ. Đáp án đã được chọn trong lịch sử thi không xóa được (sửa nội dung thì được).
+
+> Cột `Role` là cột mới của bảng `Users`. Nếu bạn đã tạo database trước đó bằng `EnsureCreated`, hãy xóa database dev để tạo lại
+> hoặc tạo migration.
+
 ## Migration (khuyến nghị cho production)
 
 ```bash
@@ -75,6 +93,9 @@ Import idempotent theo `number`: câu đã có sẽ được bỏ qua. Mỗi câ
 | PUT | `/api/exams/{id}/answers` | ✔ |
 | POST | `/api/exams/{id}/submit` | ✔ |
 | GET | `/api/exam-info` | — |
+| GET/PUT | `/api/profile` | ✔ |
+| POST | `/api/profile/change-password` | ✔ (trả token mới, đăng xuất thiết bị khác) |
+| GET/POST/PUT/DELETE | `/api/admin/questions[/{id}]` | ✔ Admin |
 | GET | `/api/stats/home` | — |
 | GET | `/api/stats/me` | ✔ |
 
