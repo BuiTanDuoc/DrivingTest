@@ -26,10 +26,29 @@ dotnet ef database update          -p src/DrivingTest.Infrastructure -s src/Driv
 
 Khi đã có migration, `Database:AutoInitialize` sẽ chạy `Migrate` thay vì `EnsureCreated`.
 
-## Import ngân hàng câu hỏi
+## Import ngân hàng câu hỏi (600 câu)
 
-Đặt file JSON cùng định dạng với `questions.sample.json` vào `Seed/`, trỏ `Database:QuestionsSeedFile` tới file đó.
-Import idempotent theo `number` (câu đã có sẽ bị bỏ qua). Mỗi câu phải có đúng một đáp án đúng.
+Repo **không kèm sẵn** bộ 600 câu (chỉ có 6 câu mẫu để chạy thử). Bạn nạp bộ đề từ nguồn mà bạn có quyền sử dụng:
+
+1. Chuẩn bị file CSV theo mẫu `tools/questions.template.csv`
+   (cột: `number, topic, critical, text, a1..a4, correct, explanation, image` và tùy chọn các cột `_en` cho tiếng Anh).
+2. Chuyển sang JSON seed (có kiểm tra: trùng số câu, sai chủ đề, đáp án đúng không hợp lệ...):
+
+```bash
+node tools/csv-to-seed.mjs questions.csv src/DrivingTest.Infrastructure/Seed/questions.json
+```
+
+3. Trỏ cấu hình tới file mới và (tùy chọn) khai báo số câu mong đợi để có cảnh báo khi thiếu/thừa:
+
+```json
+"Database": { "AutoInitialize": true, "QuestionsSeedFile": "Seed/questions.json", "ExpectedQuestionCount": 600 }
+```
+
+4. Chạy API. Khi import xong, log sẽ in tổng số câu, số câu điểm liệt và số câu theo từng chủ đề để đối chiếu.
+
+Mã chủ đề: `rules` (khái niệm và quy tắc), `signs` (biển báo), `scenarios` (sa hình), `driving-skills` (kỹ thuật lái xe),
+`vehicle` (cấu tạo và sửa chữa), `ethics` (văn hóa/đạo đức). Câu điểm liệt đánh dấu bằng cột `critical`.
+Import idempotent theo `number`: câu đã có sẽ được bỏ qua. Mỗi câu phải có đúng một đáp án đúng.
 
 ## Cấu hình quan trọng (`appsettings.json`)
 

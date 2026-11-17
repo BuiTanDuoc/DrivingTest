@@ -27,7 +27,7 @@ public sealed class DbInitializer(
         new("ethics", 6, "Văn hóa và đạo đức người lái xe", "Driver ethics & culture")
     ];
 
-    private sealed record SeedText(string Text, string Explanation);
+    private sealed record SeedText(string Text, string? Explanation);
     private sealed record SeedAnswer(bool Correct, string Vi, string? En);
     private sealed record SeedQuestion(
         int Number, string Topic, bool Critical, string? ImageUrl,
@@ -109,7 +109,7 @@ public sealed class DbInitializer(
                 IsCritical = s.Critical,
                 ImageUrl = s.ImageUrl,
                 CreatedAt = now,
-                Translations = [new QuestionTranslation { Lang = "vi", Text = s.Vi.Text, Explanation = s.Vi.Explanation }],
+                Translations = [new QuestionTranslation { Lang = "vi", Text = s.Vi.Text, Explanation = s.Vi.Explanation ?? "" }],
                 Answers = s.Answers.Select((a, i) =>
                 {
                     var answer = new Answer { IsCorrect = a.Correct, SortOrder = i + 1 };
@@ -121,7 +121,7 @@ public sealed class DbInitializer(
             };
 
             if (s.En is not null)
-                question.Translations.Add(new QuestionTranslation { Lang = "en", Text = s.En.Text, Explanation = s.En.Explanation });
+                question.Translations.Add(new QuestionTranslation { Lang = "en", Text = s.En.Text, Explanation = s.En.Explanation ?? "" });
 
             db.Questions.Add(question);
             existing.Add(s.Number);
@@ -134,6 +134,26 @@ public sealed class DbInitializer(
             logger.LogInformation("Imported {Count} question(s) from {Path}.", added, path);
         }
 
+        await ReportBankAsync(ct);
         return added > 0;
+    }
+
+    /// <summary>Ghi log tổng quan ngân hàng câu hỏi để kiểm tra nhanh sau khi import.</summary>
+    private async Task ReportBankAsync(CancellationToken ct)
+    {
+        var perTopic = await db.Questions.Where(q => q.IsActive)
+            .GroupBy(q => q.Topic.Code)
+            .Select(g => new { Code = g.Key, Count = g.Count(), Critical = g.Count(q => q.IsCritical) })
+            .ToListAsync(ct);
+
+        var total = perTopic.Sum(x => x.Count);
+        var critical = perTopic.Sum(x => x.Critical);
+        logger.LogInformation(
+            "Question bank: {Total} active question(s), {Critical} critical. Per topic: {Topics}",
+            total, critical, string.Join(", ", perTopic.OrderBy(x => x.Code).Select(x => $"{x.Code}={x.Count}")));
+
+        var expected = config.GetValue<int>("Database:ExpectedQuestionCount");
+        if (expected > 0 && total != expected)
+            logger.LogWarning("Expected {Expected} questions but the bank has {Total}.", expected, total);
     }
 }
