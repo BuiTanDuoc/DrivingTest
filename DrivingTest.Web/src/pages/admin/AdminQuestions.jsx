@@ -6,6 +6,7 @@ import { useToast } from '../../context/ToastContext';
 import { useAsync } from '../../hooks/useAsync';
 import { useDebounce } from '../../hooks/useDebounce';
 import Pagination from '../../components/Pagination';
+import AdminTabs from '../../components/AdminTabs';
 import { Empty, ErrorBox, Spinner } from '../../components/Feedback';
 
 const PAGE_SIZE = 20;
@@ -73,6 +74,7 @@ export default function AdminQuestions() {
 
   return (
     <div className="container page">
+      <AdminTabs />
       <header className="page-head row-between">
         <div>
           <h1>{t('admin.title')}</h1>

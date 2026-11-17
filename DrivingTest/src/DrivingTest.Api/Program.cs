@@ -83,7 +83,8 @@ builder.Services.AddRateLimiter(o =>
 builder.Services.Configure<ForwardedHeadersOptions>(o =>
     o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
 
-builder.Services.AddOpenApi();
+// ---- OpenAPI + Swagger UI ----
+builder.Services.AddOpenApi(o => o.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 
 var app = builder.Build();
@@ -98,8 +99,21 @@ app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-if (app.Environment.IsDevelopment()) app.MapOpenApi();
-else app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
+
+// Swagger: luôn bật ở Development; môi trường khác bật bằng Swagger:Enabled = true.
+if (app.Environment.IsDevelopment() || config.GetValue<bool>("Swagger:Enabled"))
+{
+    app.MapOpenApi(); // /openapi/v1.json
+    app.UseSwaggerUI(o =>
+    {
+        o.SwaggerEndpoint("/openapi/v1.json", "DrivingTest API v1");
+        o.RoutePrefix = "swagger";
+        o.DocumentTitle = "DrivingTest API";
+        o.EnablePersistAuthorization(); // giữ token đã nhập khi tải lại trang
+    });
+    app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+}
 
 app.UseCors();
 app.UseAuthentication();
@@ -111,5 +125,6 @@ app.MapAuthEndpoints();
 app.MapCatalogEndpoints();
 app.MapExamEndpoints();
 app.MapAccountEndpoints();
+app.MapAdminUserEndpoints();
 
 app.Run();

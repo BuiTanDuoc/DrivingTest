@@ -123,5 +123,39 @@ export default {
     errAnswers: 'Cần ít nhất 2 đáp án, mỗi đáp án có nội dung tiếng Việt.', errCorrect: 'Hãy chọn đúng một đáp án đúng.'
   },
 
+  adminTabs: { questions: 'Câu hỏi', users: 'Người dùng' },
+
+  users: {
+    title: 'Quản lý người dùng', subtitle: 'Xem, thêm, sửa, xóa tài khoản và đặt lại mật khẩu.', add: 'Thêm người dùng',
+    search: 'Tìm theo email hoặc tên...', allRoles: 'Mọi vai trò',
+    colUser: 'Người dùng', colRole: 'Vai trò', colExams: 'Lượt thi', colCreated: 'Ngày tạo',
+    total: '{{count}} người dùng', empty: 'Không có người dùng nào.', you: 'Bạn',
+    createTitle: 'Thêm người dùng', editTitle: 'Sửa người dùng', save: 'Lưu',
+    created: 'Đã thêm người dùng.', updated: 'Đã cập nhật người dùng.', deleted: 'Đã xóa người dùng.',
+    generate: 'Tạo ngẫu nhiên', cannotChangeOwnRole: 'Bạn không thể tự đổi vai trò của chính mình.',
+    cannotDeleteSelf: 'Không thể xóa tài khoản đang đăng nhập.',
+    resetPassword: 'Đặt lại MK', resetTitle: 'Đặt lại mật khẩu',
+    resetBody: 'Đặt mật khẩu mới cho {{name}} ({{email}}). Người dùng sẽ bị đăng xuất khỏi mọi thiết bị; hãy gửi mật khẩu mới cho họ.',
+    resetConfirm: 'Đặt mật khẩu', passwordReset: 'Đã đặt lại mật khẩu cho {{email}} (đã sao chép vào clipboard).',
+    deleteTitle: 'Xóa người dùng?', deleteBody: 'Tài khoản {{name}} ({{email}}) sẽ bị xóa vĩnh viễn.',
+    deleteExams: 'Toàn bộ {{count}} lượt thi, đánh dấu và tiến độ học của người dùng này cũng bị xóa.'
+  },
+
+  forgot: {
+    link: 'Quên mật khẩu?', title: 'Quên mật khẩu',
+    subtitle: 'Nhập email đã đăng ký, chúng tôi sẽ gửi liên kết để đặt lại mật khẩu.',
+    submit: 'Gửi liên kết', sending: 'Đang gửi...',
+    sent: 'Nếu {{email}} đã đăng ký, một email hướng dẫn đặt lại mật khẩu vừa được gửi tới hộp thư.',
+    sentHint: 'Không thấy email? Hãy kiểm tra thư mục Spam hoặc gửi lại sau ít phút.',
+    resend: 'Gửi lại', backToLogin: 'Quay lại đăng nhập'
+  },
+
+  reset: {
+    title: 'Đặt lại mật khẩu', subtitle: 'Nhập mật khẩu mới cho tài khoản của bạn.', submit: 'Đặt mật khẩu mới',
+    done: 'Đã đặt lại mật khẩu. Bạn có thể đăng nhập bằng mật khẩu mới.',
+    invalid: 'Liên kết không hợp lệ hoặc đã hết hạn.', missing: 'Liên kết đặt lại mật khẩu không hợp lệ.',
+    requestNew: 'Yêu cầu liên kết mới'
+  },
+
   notFound: { title: 'Không tìm thấy trang', body: 'Trang bạn tìm không tồn tại.', back: 'Về trang chủ' }
 };

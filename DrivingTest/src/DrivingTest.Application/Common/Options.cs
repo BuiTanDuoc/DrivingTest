@@ -30,6 +30,15 @@ public sealed class JwtOptions
     [Range(1, 365)] public int RefreshTokenDays { get; set; } = 30;
 }
 
+public sealed class PasswordResetOptions
+{
+    public const string SectionName = "PasswordReset";
+
+    /// <summary>Trang đặt lại mật khẩu của frontend; token được nối thêm dạng ?token=...</summary>
+    [Required, Url] public string ResetUrl { get; set; } = "http://localhost:5173/dat-lai-mat-khau";
+    [Range(5, 1440)] public int TokenMinutes { get; set; } = 30;
+}
+
 public sealed class CacheOptions
 {
     public const string SectionName = "Cache";

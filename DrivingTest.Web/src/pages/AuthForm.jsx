@@ -89,6 +89,10 @@ export default function AuthForm({ mode }) {
           {errors.password && <em className="field-error">{errors.password}</em>}
         </label>
 
+        {!isRegister && (
+          <p className="forgot-link"><Link to="/quen-mat-khau">{t('forgot.link')}</Link></p>
+        )}
+
         {serverError && <div className="error-box" role="alert">{serverError}</div>}
 
         <button className="btn btn-primary btn-lg" disabled={busy}>

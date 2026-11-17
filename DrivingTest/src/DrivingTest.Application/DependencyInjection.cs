@@ -42,6 +42,11 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        services.AddOptions<PasswordResetOptions>()
+            .Bind(config.GetSection(PasswordResetOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
         services.AddScoped<AuthTokenIssuer>();
         services.AddScoped<StudyStatsRecorder>();
         services.AddScoped<ExamComposer>();

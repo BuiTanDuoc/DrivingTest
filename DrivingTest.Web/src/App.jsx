@@ -12,6 +12,9 @@ import Profile from './pages/Profile';
 import AdminQuestions from './pages/admin/AdminQuestions';
 import QuestionEditor from './pages/admin/QuestionEditor';
 import AdminRoute from './components/AdminRoute';
+import AdminUsers from './pages/admin/AdminUsers';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 export default function App() {
   return (
@@ -22,6 +25,8 @@ export default function App() {
           <Route path="hoc" element={<Learn />} />
           <Route path="dang-nhap" element={<AuthForm mode="login" />} />
           <Route path="dang-ky" element={<AuthForm mode="register" />} />
+          <Route path="quen-mat-khau" element={<ForgotPassword />} />
+          <Route path="dat-lai-mat-khau" element={<ResetPassword />} />
 
           {/* Thi thử, kết quả, lịch sử cần đăng nhập (backend yêu cầu token). */}
           <Route element={<ProtectedRoute />}>
@@ -36,6 +41,7 @@ export default function App() {
             <Route path="quan-tri" element={<AdminQuestions />} />
             <Route path="quan-tri/cau-hoi/moi" element={<QuestionEditor />} />
             <Route path="quan-tri/cau-hoi/:id" element={<QuestionEditor />} />
+            <Route path="quan-tri/nguoi-dung" element={<AdminUsers />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

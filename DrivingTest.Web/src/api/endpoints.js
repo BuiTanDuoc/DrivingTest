@@ -3,7 +3,10 @@ import { api } from './client';
 export const authApi = {
   register: (body) => api('/api/auth/register', { method: 'POST', body }),
   login: (body) => api('/api/auth/login', { method: 'POST', body }),
-  logout: (refreshToken) => api('/api/auth/logout', { method: 'POST', body: { refreshToken } })
+  logout: (refreshToken) => api('/api/auth/logout', { method: 'POST', body: { refreshToken } }),
+  // Luôn trả 204 (không tiết lộ email có tồn tại hay không)
+  forgotPassword: (email) => api('/api/auth/forgot-password', { method: 'POST', body: { email } }),
+  resetPassword: (token, newPassword) => api('/api/auth/reset-password', { method: 'POST', body: { token, newPassword } })
 };
 
 export const catalogApi = {
@@ -44,6 +47,15 @@ export const adminApi = {
   create: (body) => api('/api/admin/questions', { method: 'POST', body }),
   update: (id, body) => api(`/api/admin/questions/${id}`, { method: 'PUT', body }),
   remove: (id) => api(`/api/admin/questions/${id}`, { method: 'DELETE' })
+};
+
+export const adminUsersApi = {
+  list: (query) => api('/api/admin/users', { query }),
+  get: (id) => api(`/api/admin/users/${id}`),
+  create: (body) => api('/api/admin/users', { method: 'POST', body }),
+  update: (id, body) => api(`/api/admin/users/${id}`, { method: 'PUT', body }),
+  remove: (id) => api(`/api/admin/users/${id}`, { method: 'DELETE' }),
+  resetPassword: (id, newPassword) => api(`/api/admin/users/${id}/reset-password`, { method: 'POST', body: { newPassword } })
 };
 
 export const statsApi = {

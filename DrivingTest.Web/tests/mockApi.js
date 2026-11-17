@@ -89,6 +89,28 @@ export function installFetch() {
       });
     if (path === '/api/admin/questions/11' && method === 'PUT') return json({ id: 11, ...body });
 
+    // ---- Quản lý người dùng ----
+    const users = [
+      { id: 'u1', email: 'a@b.c', displayName: 'Mười', role: 'Admin', createdAt: new Date(now).toISOString(), examCount: 0 },
+      { id: 'u2', email: 'lan@example.com', displayName: 'Lan', role: 'User', createdAt: new Date(now).toISOString(), examCount: 3 }
+    ];
+    if (path === '/api/admin/users' && method === 'GET')
+      return json({ items: users, page: 1, pageSize: 20, totalCount: users.length, totalPages: 1 });
+    if (path === '/api/admin/users' && method === 'POST') {
+      if (body.email === 'a@b.c') return json({ title: 'Conflict', detail: 'Email is already registered.' }, 409);
+      return json({ id: 'u9', createdAt: new Date(now).toISOString(), examCount: 0, ...body, password: undefined }, 201);
+    }
+    if (path === '/api/admin/users/u2' && method === 'PUT') return json({ ...users[1], ...body });
+    if (path === '/api/admin/users/u2' && method === 'DELETE') return json(null, 204);
+    if (path === '/api/admin/users/u2/reset-password') return json(null, 204);
+
+    // ---- Quên / đặt lại mật khẩu ----
+    if (path === '/api/auth/forgot-password') return json(null, 204);
+    if (path === '/api/auth/reset-password') {
+      if (body.token !== 'good-token') return json({ title: 'Bad request', detail: 'The reset link is invalid or has expired.' }, 400);
+      return json(null, 204);
+    }
+
     return json({ title: 'Not found' }, 404);
   });
   return calls;

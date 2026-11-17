@@ -374,3 +374,16 @@ textarea.input { resize: vertical; min-height: 80px; font: inherit; }
 .answer-tools { display: flex; gap: 0.15rem; }
 .editor-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
 .plain-list { margin: 0; padding-left: 1.1rem; }
+
+/* ---- Quản trị người dùng & quên mật khẩu ---- */
+.admin-tabs { margin-bottom: 1.25rem; }
+.admin-tabs .tab { text-decoration: none; }
+.users-filters { grid-template-columns: minmax(200px, 1fr) minmax(160px, 220px); }
+.user-email { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.input-group { display: flex; gap: 0.5rem; align-items: center; }
+.input-group .input { flex: 1; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.modal .form-card { gap: 0.85rem; }
+.modal h3 { margin-top: 0; }
+.forgot-link { margin: -0.4rem 0 0; text-align: right; font-size: 0.9rem; }
+.success-box { background: var(--success-bg); color: var(--success); border-radius: 12px; padding: 0.8rem 1rem; font-weight: 600; }
+@media (max-width: 640px) { .users-filters { grid-template-columns: 1fr; } }

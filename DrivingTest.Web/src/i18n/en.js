@@ -123,5 +123,39 @@ export default {
     errAnswers: 'At least 2 answers are required, each with Vietnamese text.', errCorrect: 'Mark exactly one answer as correct.'
   },
 
+  adminTabs: { questions: 'Questions', users: 'Users' },
+
+  users: {
+    title: 'User management', subtitle: 'View, add, edit and delete accounts, and reset passwords.', add: 'Add user',
+    search: 'Search by email or name...', allRoles: 'All roles',
+    colUser: 'User', colRole: 'Role', colExams: 'Exams', colCreated: 'Created',
+    total: '{{count}} users', empty: 'No users found.', you: 'You',
+    createTitle: 'Add user', editTitle: 'Edit user', save: 'Save',
+    created: 'User added.', updated: 'User updated.', deleted: 'User deleted.',
+    generate: 'Generate', cannotChangeOwnRole: 'You cannot change your own role.',
+    cannotDeleteSelf: 'You cannot delete the account you are signed in with.',
+    resetPassword: 'Reset password', resetTitle: 'Reset password',
+    resetBody: 'Set a new password for {{name}} ({{email}}). They will be signed out of every device; send them the new password.',
+    resetConfirm: 'Set password', passwordReset: 'Password reset for {{email}} (copied to clipboard).',
+    deleteTitle: 'Delete user?', deleteBody: 'The account {{name}} ({{email}}) will be permanently deleted.',
+    deleteExams: 'All {{count}} exam attempts, bookmarks and study progress of this user will also be deleted.'
+  },
+
+  forgot: {
+    link: 'Forgot password?', title: 'Forgot password',
+    subtitle: 'Enter the email you registered with and we will send you a link to reset your password.',
+    submit: 'Send link', sending: 'Sending...',
+    sent: 'If {{email}} is registered, an email with instructions to reset your password is on its way.',
+    sentHint: "Didn't get it? Check your spam folder or try again in a few minutes.",
+    resend: 'Send again', backToLogin: 'Back to sign in'
+  },
+
+  reset: {
+    title: 'Reset password', subtitle: 'Enter a new password for your account.', submit: 'Set new password',
+    done: 'Your password has been reset. You can now sign in with the new password.',
+    invalid: 'This link is invalid or has expired.', missing: 'This password reset link is invalid.',
+    requestNew: 'Request a new link'
+  },
+
   notFound: { title: 'Page not found', body: "The page you're looking for doesn't exist.", back: 'Back to home' }
 };

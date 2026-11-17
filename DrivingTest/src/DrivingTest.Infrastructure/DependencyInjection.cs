@@ -1,6 +1,7 @@
 using DrivingTest.Application.Common;
 using DrivingTest.Infrastructure.Persistence;
 using DrivingTest.Infrastructure.Services;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,12 @@ public static class DependencyInjection
 
         services.AddSingleton<IPasswordService, PasswordService>();
         services.AddSingleton<ITokenService, TokenService>();
+
+        // Quên mật khẩu: token ký bằng Data Protection + gửi email qua SMTP.
+        services.AddDataProtection().SetApplicationName("DrivingTest");
+        services.AddSingleton<IPasswordResetTokenService, PasswordResetTokenService>();
+        services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
+        services.AddSingleton<IEmailSender, SmtpEmailSender>();
 
         services.AddScoped<DbInitializer>();
         services.AddHostedService<ExamExpirationWorker>();
