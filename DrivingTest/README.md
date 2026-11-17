@@ -9,8 +9,8 @@ docker compose up -d                       # SQL Server
 dotnet run --project src/DrivingTest.Api   # http://localhost:5080
 ```
 
-Ở môi trường Development, ứng dụng tự tạo database, seed 6 chủ đề và 6 câu hỏi mẫu
-(`src/DrivingTest.Infrastructure/Seed/questions.sample.json`). Cấu hình đề thi cho dev (6 câu) nằm trong
+Ở môi trường Development, ứng dụng tự tạo database, seed 6 chủ đề và import bộ 600 câu hỏi
+(`src/DrivingTest.Infrastructure/Seed/questions.json`). Cấu hình đề thi cho dev (6 câu) nằm trong
 `appsettings.Development.json`.
 
 - OpenAPI: `http://localhost:5080/openapi/v1.json`
@@ -44,29 +44,37 @@ dotnet ef database update          -p src/DrivingTest.Infrastructure -s src/Driv
 
 Khi đã có migration, `Database:AutoInitialize` sẽ chạy `Migrate` thay vì `EnsureCreated`.
 
-## Import ngân hàng câu hỏi (600 câu)
+## Ngân hàng câu hỏi (600 câu)
 
-Repo **không kèm sẵn** bộ 600 câu (chỉ có 6 câu mẫu để chạy thử). Bạn nạp bộ đề từ nguồn mà bạn có quyền sử dụng:
+Repo đã kèm sẵn bộ **600 câu hỏi sát hạch lái xe cơ giới đường bộ** (Cục CSGT, áp dụng từ 2025):
 
-1. Chuẩn bị file CSV theo mẫu `tools/questions.template.csv`
-   (cột: `number, topic, critical, text, a1..a4, correct, explanation, image` và tùy chọn các cột `_en` cho tiếng Anh).
-2. Chuyển sang JSON seed (có kiểm tra: trùng số câu, sai chủ đề, đáp án đúng không hợp lệ...):
+- `src/DrivingTest.Infrastructure/Seed/questions.json` — file seed được import khi khởi động.
+- `tools/questions-600.csv` — cùng dữ liệu ở dạng CSV để chỉnh sửa (định dạng của `tools/csv-to-seed.mjs`).
+- `../DrivingTest.Web/public/images/questions/NNN.webp` — 318 hình (biển báo, sa hình…); `imageUrl` = `/images/questions/NNN.webp`.
+- `tools/pdf-to-seed.py` — script trích xuất từ file PDF gốc (đáp án đúng nhận theo phần gạch chân).
+
+Phân chủ đề theo chương của bộ đề: 1–180 `rules`, 181–205 `ethics`, 206–263 `driving-skills`, 264–300 `vehicle`,
+301–485 `signs`, 486–600 `scenarios`. 60 câu điểm liệt theo Phụ lục III Công văn 2262/CSGT-P5.
+Phần giải thích (`explanation`) đang để trống.
+
+Import idempotent theo `number`: câu đã có sẽ được bỏ qua. Nếu database đã có 6 câu mẫu cũ (số 1–6) hoặc cần nạp lại
+sau khi sửa dữ liệu, chạy **một lần** với `Database:UpdateExistingQuestions=true` để ghi đè các câu trùng số:
 
 ```bash
-node tools/csv-to-seed.mjs questions.csv src/DrivingTest.Infrastructure/Seed/questions.json
+dotnet run --project src/DrivingTest.Api -- --Database:UpdateExistingQuestions=true
 ```
 
-3. Trỏ cấu hình tới file mới và (tùy chọn) khai báo số câu mong đợi để có cảnh báo khi thiếu/thừa:
+(Đáp án đã nằm trong lịch sử thi không bị xóa; câu nào khác số lượng đáp án mà đã có lịch sử thi sẽ được cảnh báo trong log.)
 
-```json
-"Database": { "AutoInitialize": true, "QuestionsSeedFile": "Seed/questions.json", "ExpectedQuestionCount": 600 }
+Sửa dữ liệu rồi tạo lại JSON:
+
+```bash
+node tools/csv-to-seed.mjs tools/questions-600.csv src/DrivingTest.Infrastructure/Seed/questions.json
+# hoặc trích lại từ PDF:  python tools/pdf-to-seed.py <file.pdf> <thư-mục-ra>   (cần pymupdf, pillow)
 ```
-
-4. Chạy API. Khi import xong, log sẽ in tổng số câu, số câu điểm liệt và số câu theo từng chủ đề để đối chiếu.
 
 Mã chủ đề: `rules` (khái niệm và quy tắc), `signs` (biển báo), `scenarios` (sa hình), `driving-skills` (kỹ thuật lái xe),
-`vehicle` (cấu tạo và sửa chữa), `ethics` (văn hóa/đạo đức). Câu điểm liệt đánh dấu bằng cột `critical`.
-Import idempotent theo `number`: câu đã có sẽ được bỏ qua. Mỗi câu phải có đúng một đáp án đúng.
+`vehicle` (cấu tạo và sửa chữa), `ethics` (văn hóa/đạo đức). Mỗi câu phải có đúng một đáp án đúng.
 
 ## Cấu hình quan trọng (`appsettings.json`)
 

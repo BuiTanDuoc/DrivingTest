@@ -125,19 +125,39 @@ public sealed class DbInitializer(
         }
 
         var seeds = JsonSerializer.Deserialize<List<SeedQuestion>>(await File.ReadAllTextAsync(path, ct), Json) ?? [];
-        var existing = (await db.Questions.Select(q => q.Number).ToListAsync(ct)).ToHashSet();
         var topicIds = await db.Topics.ToDictionaryAsync(t => t.Code, t => t.Id, ct);
+
+        // Bật Database:UpdateExistingQuestions để ghi đè câu đã có theo file seed (vd: thay 6 câu mẫu bằng bộ 600 câu).
+        var updateExisting = config.GetValue<bool>("Database:UpdateExistingQuestions");
+        var existing = updateExisting
+            ? await db.Questions
+                .Include(q => q.Translations)
+                .Include(q => q.Answers).ThenInclude(a => a.Translations)
+                .AsSplitQuery()
+                .ToDictionaryAsync(q => q.Number, ct)
+            : (await db.Questions.Select(q => q.Number).ToListAsync(ct)).ToDictionary(n => n, _ => (Question)null!);
+
+        // Đáp án đã được chọn trong lịch sử thi thì không được xóa (FK Restrict).
+        var usedAnswerIds = updateExisting
+            ? (await db.ExamAttemptQuestions.Where(x => x.SelectedAnswerId != null)
+                .Select(x => x.SelectedAnswerId!.Value).Distinct().ToListAsync(ct)).ToHashSet()
+            : new HashSet<int>();
+
         var now = DateTime.UtcNow;
-        var added = 0;
+        int added = 0, updated = 0;
 
         foreach (var s in seeds)
         {
-            if (existing.Contains(s.Number)) continue;
-
             if (!topicIds.TryGetValue(s.Topic, out var topicId) || s.Answers.Count < 2 ||
                 s.Answers.Count(a => a.Correct) != 1)
             {
                 logger.LogWarning("Skipping question #{Number}: unknown topic or not exactly one correct answer.", s.Number);
+                continue;
+            }
+
+            if (existing.TryGetValue(s.Number, out var current))
+            {
+                if (updateExisting && UpdateQuestion(current, s, topicId, usedAnswerIds)) updated++;
                 continue;
             }
 
@@ -149,32 +169,112 @@ public sealed class DbInitializer(
                 ImageUrl = s.ImageUrl,
                 CreatedAt = now,
                 Translations = [new QuestionTranslation { Lang = "vi", Text = s.Vi.Text, Explanation = s.Vi.Explanation ?? "" }],
-                Answers = s.Answers.Select((a, i) =>
-                {
-                    var answer = new Answer { IsCorrect = a.Correct, SortOrder = i + 1 };
-                    answer.Translations.Add(new AnswerTranslation { Lang = "vi", Text = a.Vi });
-                    if (!string.IsNullOrWhiteSpace(a.En))
-                        answer.Translations.Add(new AnswerTranslation { Lang = "en", Text = a.En });
-                    return answer;
-                }).ToList()
+                Answers = s.Answers.Select((a, i) => NewAnswer(a, i + 1)).ToList()
             };
 
             if (s.En is not null)
                 question.Translations.Add(new QuestionTranslation { Lang = "en", Text = s.En.Text, Explanation = s.En.Explanation ?? "" });
 
             db.Questions.Add(question);
-            existing.Add(s.Number);
+            existing[s.Number] = question;
             added++;
         }
 
-        if (added > 0)
+        if (added > 0 || updated > 0)
         {
             await db.SaveChangesAsync(ct);
-            logger.LogInformation("Imported {Count} question(s) from {Path}.", added, path);
+            logger.LogInformation("Imported {Added} new and updated {Updated} existing question(s) from {Path}.", added, updated, path);
         }
 
         await ReportBankAsync(ct);
-        return added > 0;
+        return added > 0 || updated > 0;
+    }
+
+    private static Answer NewAnswer(SeedAnswer a, int sortOrder)
+    {
+        var answer = new Answer { IsCorrect = a.Correct, SortOrder = sortOrder };
+        answer.Translations.Add(new AnswerTranslation { Lang = "vi", Text = a.Vi });
+        if (!string.IsNullOrWhiteSpace(a.En))
+            answer.Translations.Add(new AnswerTranslation { Lang = "en", Text = a.En });
+        return answer;
+    }
+
+    /// <summary>
+    /// Đồng bộ một câu đã có với dữ liệu seed. Bản dịch tiếng Anh không có trong seed sẽ bị xóa (tránh lệch nội dung).
+    /// Đáp án: cùng số lượng thì cập nhật tại chỗ; khác số lượng thì tạo lại, trừ khi đáp án cũ đã nằm trong lịch sử thi.
+    /// </summary>
+    private bool UpdateQuestion(Question q, SeedQuestion s, int topicId, HashSet<int> usedAnswerIds)
+    {
+        if (Signature(q) == Signature(s, topicId)) return false;
+
+        q.TopicId = topicId;
+        q.IsCritical = s.Critical;
+        q.ImageUrl = s.ImageUrl;
+        SetText(q.Translations, "vi", s.Vi.Text, s.Vi.Explanation);
+        SetText(q.Translations, "en", s.En?.Text, s.En?.Explanation);
+
+        var answers = q.Answers.OrderBy(a => a.SortOrder).ToList();
+        if (answers.Count == s.Answers.Count)
+        {
+            for (var i = 0; i < answers.Count; i++)
+            {
+                answers[i].IsCorrect = s.Answers[i].Correct;
+                SetAnswerText(answers[i].Translations, "vi", s.Answers[i].Vi);
+                SetAnswerText(answers[i].Translations, "en", s.Answers[i].En);
+            }
+        }
+        else if (answers.All(a => !usedAnswerIds.Contains(a.Id)))
+        {
+            q.Answers.RemoveAll(answers.Contains);
+            db.Answers.RemoveRange(answers);
+            q.Answers.AddRange(s.Answers.Select((a, i) => NewAnswer(a, i + 1)));
+        }
+        else
+        {
+            logger.LogWarning("Question #{Number}: answers are used in exam history and the answer count differs; answers not updated.", s.Number);
+        }
+
+        return true;
+    }
+
+    /// <summary>Chuỗi đại diện nội dung câu hỏi để so sánh nhanh, tránh ghi DB khi không có gì thay đổi.</summary>
+    private static string Signature(Question q)
+    {
+        string T(string lang) => q.Translations.FirstOrDefault(t => t.Lang == lang) is { } t ? $"{t.Text}|{t.Explanation}" : "";
+        var answers = q.Answers.OrderBy(a => a.SortOrder).Select(a =>
+            $"{a.IsCorrect}|{a.Translations.FirstOrDefault(t => t.Lang == "vi")?.Text}|{a.Translations.FirstOrDefault(t => t.Lang == "en")?.Text}");
+        return $"{q.TopicId}|{q.IsCritical}|{q.ImageUrl}|{T("vi")}|{T("en")}|{string.Join("\n", answers)}";
+    }
+
+    private static string Signature(SeedQuestion s, int topicId)
+    {
+        var en = string.IsNullOrWhiteSpace(s.En?.Text) ? "" : $"{s.En.Text}|{s.En.Explanation ?? ""}";
+        var answers = s.Answers.Select(a => $"{a.Correct}|{a.Vi}|{(string.IsNullOrWhiteSpace(a.En) ? null : a.En)}");
+        return $"{topicId}|{s.Critical}|{s.ImageUrl}|{s.Vi.Text}|{s.Vi.Explanation ?? ""}|{en}|{string.Join("\n", answers)}";
+    }
+
+    private void SetText(List<QuestionTranslation> items, string lang, string? text, string? explanation)
+    {
+        var t = items.FirstOrDefault(x => x.Lang == lang);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            if (t is not null) { items.Remove(t); db.Remove(t); }
+            return;
+        }
+        if (t is null) items.Add(new QuestionTranslation { Lang = lang, Text = text, Explanation = explanation ?? "" });
+        else { t.Text = text; t.Explanation = explanation ?? ""; }
+    }
+
+    private void SetAnswerText(List<AnswerTranslation> items, string lang, string? text)
+    {
+        var t = items.FirstOrDefault(x => x.Lang == lang);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            if (t is not null) { items.Remove(t); db.Remove(t); }
+            return;
+        }
+        if (t is null) items.Add(new AnswerTranslation { Lang = lang, Text = text });
+        else t.Text = text;
     }
 
     /// <summary>Ghi log tổng quan ngân hàng câu hỏi để kiểm tra nhanh sau khi import.</summary>
